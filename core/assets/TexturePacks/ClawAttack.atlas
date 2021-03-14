@@ -1,0 +1,62 @@
+
+ClawAttack.png
+size: 512, 64
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+CS001
+  rotate: false
+  xy: 284, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS002
+  rotate: false
+  xy: 143, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS003
+  rotate: false
+  xy: 2, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS004
+  rotate: false
+  xy: 237, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS005
+  rotate: false
+  xy: 96, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS006
+  rotate: false
+  xy: 331, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS007
+  rotate: false
+  xy: 190, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
+CS008
+  rotate: false
+  xy: 49, 2
+  size: 45, 33
+  orig: 45, 33
+  offset: 0, 0
+  index: -1
