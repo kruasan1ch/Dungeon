@@ -16,7 +16,7 @@ public class Enemy extends Actor {
     public float health;
     public Damage first;
     public String name;
-    private float[] DamageMultipliers;
+    private final float[] DamageMultipliers;
     public SwingAnimation SwingAnimation;
     public Enemy(String name,String atlasPath,String atlasRegion,float health,float damageAmount, float[] DamageMultipliers, int AttackX, int AttackY){
         atlas = new TextureAtlas(atlasPath);
