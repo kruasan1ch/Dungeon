@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import game.dungeon.Damage;
-import game.dungeon.Dclass;
 
 public class Enemy extends Actor {
     TextureAtlas atlas ;
@@ -18,7 +17,8 @@ public class Enemy extends Actor {
     public Damage first;
     public String name;
     private float[] DamageMultipliers;
-    public Enemy(String name,String atlasPath,String atlasRegion,float health,float damageAmount, float[] DamageMultipliers){
+    public SwingAnimation SwingAnimation;
+    public Enemy(String name,String atlasPath,String atlasRegion,float health,float damageAmount, float[] DamageMultipliers, int AttackX, int AttackY){
         atlas = new TextureAtlas(atlasPath);
         region = atlas.findRegion(atlasRegion);
         sprite = new Sprite(region);
@@ -31,6 +31,7 @@ public class Enemy extends Actor {
         first.Type = 0;
         this.name =name;
         this.DamageMultipliers = DamageMultipliers;
+        SwingAnimation = new SwingAnimation("TexturePacks/SwordAttackBack.atlas",AttackX,  AttackY);
     }
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -55,4 +56,5 @@ public class Enemy extends Actor {
             return  -1;
         }
     }
+
 }

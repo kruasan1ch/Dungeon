@@ -24,6 +24,7 @@ public class Player extends Actor {
     public int xp = 0;
     public int xpToNextLevel = 100;
     public int potions = 5;
+    public SwingAnimation SwingAnimation;
     public Player(){
         atlas = new TextureAtlas("TexturePacks/Player.atlas");
         region = atlas.findRegion("Back");
@@ -36,6 +37,7 @@ public class Player extends Actor {
         second = new Damage();
         second.Ammount = 10;
         name ="";
+        SwingAnimation = new SwingAnimation("TexturePacks/SwordAttackFront.atlas",506,340);
     }
     public boolean addXp(int xp){
         this.xp += xp;

@@ -58,11 +58,15 @@ public class BattleUI extends Table {
         this.addActor(charIcon);
         this.addActor(scrollPane);
         this.setPosition(355,145);
+
     }
     public void UpdateHpLabel(){
         this.hp.setText("HP: " + game.player.getHealth());
     }
     public void UpdatePotionLabel(){
         this.potions.setText("Potions: " + game.player.potions);
+    }
+    public void addBattlelogLine(String line){
+        battleLog.setText(battleLog.getText() + line);
     }
 }

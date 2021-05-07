@@ -20,14 +20,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import game.dungeon.Actions.AttackListener;
 import game.dungeon.Actions.EnemyAttack;
+import game.dungeon.Actions.TurnLabelSequence;
 import game.dungeon.Dclass;
 import game.dungeon.Actions.SetVisibleAction;
 import game.dungeon.UI.BattleUI;
 import game.dungeon.UI.EscWindow;
+import game.dungeon.UI.NextLevel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
@@ -47,8 +51,9 @@ public class TombScreen implements Screen {
     private boolean PlayersTurn = true;
     private byte AttackType = -1;
     private Label turn;
-    private SwingAnimation swingAnimation;
+    private boolean battleEnded = false;
     private List<Enemy> enemyList = new ArrayList();
+    private NextLevel nextLevel;
     public TombScreen(Dclass game){
         this.game = game;
         stage = new Stage();
@@ -68,7 +73,8 @@ public class TombScreen implements Screen {
         camera.update();
         player.SetStartPosition(506,300);
 
-        final Enemy enemy = new Enemy("Skeleton","TexturePacks/Enemies.atlas","Skeleton", 30,15,new float[]{0.9f,2f,0.5f,1f});
+        nextLevel = new NextLevel("",skin,X*4f-200,Y*3f-200,400,200,game);
+        final Enemy enemy = new Enemy("Skeleton","TexturePacks/Enemies.atlas","Skeleton", 30,15,new float[]{0.9f,2f,0.5f,1f},506,560);
         enemy.setPosition(510,600);
         bUI.firstAttack.addListener(new ChangeListener() {
             @Override
@@ -111,36 +117,16 @@ public class TombScreen implements Screen {
         enemy.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(PlayersTurn){
-                    if(AttackType ==0) {
-                        bUI.battleLog.setText(bUI.battleLog.getText() + "You hit " + enemy.name + " with " +
-                                enemy.DamageEnemy(player.first.Ammount, player.first.Type, player) + "\n");
-                    }
-                    if(AttackType == 1){
-                        bUI.battleLog.setText(bUI.battleLog.getText() + "You hit " + enemy.name + " with " +
-                                enemy.DamageEnemy(player.second.Ammount, player.second.Type, player) + "\n");
-                    }
-                    AttackType = -1;
-                    Pixmap pm = new Pixmap(Gdx.files.internal("Cursor/Cursor.png"));
-                    Gdx.graphics.setCursor(Gdx.graphics.newCursor(pm, 0, 0));
-                    pm.dispose();
-
-                    swingAnimation.start(0.05f);
-
-                    if(enemy.health <= 0){
-                        bUI.battleLog.setText(bUI.battleLog.getText() + "You killed " + enemy.name + "\n");
-                        player.killCount +=1;
-                        enemy.remove();
-                    }else{
-                        PlayersTurn = false;
-                        turnLabelSequence(1);
-                    }
-
-                }
+                new AttackListener(PlayersTurn, AttackType, bUI, enemy, player, enemyList, turn);
+                if(!enemyList.isEmpty()) {
+                    new TurnLabelSequence(1, turn);
+                    PlayersTurn = false;
+                }else {battleEnded = true;}
             }
         });
-        swingAnimation = new SwingAnimation("TexturePacks/SwordAttackFront.atlas",506,340);
-        stage.addActor(swingAnimation);
+
+        stage.addActor(player.SwingAnimation);
+        stage.addActor(enemy.SwingAnimation);
         enemyList.add(enemy);
         turn = new Label("Players Turn",skin);
         turn.setVisible(false);
@@ -150,6 +136,7 @@ public class TombScreen implements Screen {
         stage.addActor(enemy);
         stage.addActor(bUI);
         stage.addActor(player);
+        stage.addActor(nextLevel);
         stage.addActor(escWindow);
     }
 
@@ -159,11 +146,28 @@ public class TombScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if(Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)){
             escWindow.setVisible(!game.Pause);
-
             game.Pause = !game.Pause;
         }
-        if(!PlayersTurn){
+        if(!PlayersTurn && !enemyList.isEmpty()){
             EnemyAction();
+        }
+        if(battleEnded){
+            battleEnded = false;
+            int previos = player.potions;
+            Random rnd = new Random();
+            int i = rnd.nextInt(100);
+            if(i <= 15){
+                player.potions += 3;
+            }
+            if(i <= 30 && i > 15){
+                player.potions += 2;
+            }
+            if(i <= 50 && i > 30){
+                player.potions += 1;
+            }
+            bUI.UpdatePotionLabel();
+            bUI.addBattlelogLine("You found " + (player.potions - previos) + " health potions");
+            nextLevel.SetVisible(true);
         }
         renderer.setView(camera);
         renderer.render();
@@ -198,23 +202,14 @@ public class TombScreen implements Screen {
         map.dispose();
         renderer.dispose();
     }
-    private void turnLabelSequence(int turnId){
-        if(turnId == 0){
-            turn.setText("Players turn");
-        }
-        else {
-            turn.setText("Enemies turn");
-        }
-        turn.addAction(sequence(delay(0.3f), new SetVisibleAction(turn,true),delay(2f), new SetVisibleAction(turn,false)));
-    }
-    private void EnemyAction(){
 
-        for (int i = 0; i < enemyList.size(); i++) {
-            enemyList.get(i).addAction(sequence(delay(2f),new EnemyAttack(player,bUI,enemyList.get(i))));
-            if(i == enemyList.size() -1){
-                PlayersTurn = true;
-                turnLabelSequence(0);
-            }
+    private void EnemyAction(){
+        System.out.println(PlayersTurn);
+        for (Enemy enemy : enemyList) {
+            enemy.SwingAnimation.start(0.05f);
+            enemy.addAction(sequence(delay(0.3f), new EnemyAttack(player, bUI, enemy)));
         }
+        PlayersTurn = true;
+        new TurnLabelSequence(0,turn);
     }
 }
