@@ -21,9 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import game.dungeon.Actions.AttackListener;
 import game.dungeon.Actions.EnemyAttack;
+import game.dungeon.Actions.SetVisibleAction;
 import game.dungeon.Actions.TurnLabelSequence;
 import game.dungeon.Dclass;
-import game.dungeon.Actions.SetVisibleAction;
 import game.dungeon.UI.BattleUI;
 import game.dungeon.UI.EscWindow;
 import game.dungeon.UI.NextLevel;
@@ -36,7 +36,7 @@ import java.util.Random;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 
-public class TombScreen implements Screen {
+public class RandomScreen implements Screen {
     private final Dclass game;
     private TiledMap map;
     private final Stage stage;
@@ -55,7 +55,7 @@ public class TombScreen implements Screen {
     private List<Enemy> enemyList = new ArrayList();
     private NextLevel nextLevel;
     private levelUp levelUp;
-    public TombScreen(Dclass game){
+    public RandomScreen(Dclass game){
         this.game = game;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
@@ -76,7 +76,8 @@ public class TombScreen implements Screen {
 
         nextLevel = new NextLevel("",skin,X*4f-200,Y*3f-200,400,200,game);
         levelUp = new levelUp("",skin,X*4f - 250,Y*3f - 250,500,500,game,bUI);
-        final Enemy enemy = new Enemy("Skeleton","TexturePacks/Enemies.atlas","Skeleton", 30,8,(int) (player.xpToNextLevel * 1.3),new float[]{0.9f,2f,0.5f,1f},506,560);
+        final Enemy enemy = new Enemy("Skeleton","TexturePacks/Enemies.atlas","Skeleton", 30,
+                8,(int) (player.xpToNextLevel * 1.3),new float[]{0.9f,2f,0.5f,1f},506,560);
         enemy.setPosition(510,600);
         bUI.firstAttack.addListener(new ChangeListener() {
             @Override
@@ -171,6 +172,7 @@ public class TombScreen implements Screen {
             bUI.UpdatePotionLabel();
             bUI.addBattlelogLine("You found " + (player.potions - previos) + " health potions");
             if(player.hasLeveled){
+                System.out.println("levelup");
                 levelUp.setVisible(true);
             }
             nextLevel.SetVisible(true);

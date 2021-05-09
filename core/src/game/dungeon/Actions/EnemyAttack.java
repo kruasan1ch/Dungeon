@@ -16,7 +16,7 @@ public class EnemyAttack extends Action {
     }
     @Override
     public boolean act(float delta) {
-        player.DamageHealth(enemy.first.Ammount);
+        player.DamageHealth(enemy.first.Ammount, enemy, bUi);
         bUi.UpdateHpLabel();
         return true;
     }

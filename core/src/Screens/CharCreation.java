@@ -50,7 +50,7 @@ public class CharCreation implements Screen {
             public void changed(ChangeEvent event, Actor actor) {
                 text.setText("The barbarian\n\"Once he was chief of northern tribe. Now he is a vessel of powerful ghost.\n" +
                         "More he kill - more power he gets\"\n" +
-                        "\nYour kill count increases damage and health, but sins barbarian wasn't college professor you gain less experience");
+                        "\nYour kill count increases damage and health, but since barbarian wasn't college professor you gain less experience");
                 playerClass = 0;
             }
         });

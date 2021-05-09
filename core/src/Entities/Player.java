@@ -9,6 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.Array;
 import game.dungeon.Damage;
+import game.dungeon.UI.BattleUI;
+
+import java.util.Random;
 
 public class Player extends Actor {
     private int playerClass=0;
@@ -17,6 +20,7 @@ public class Player extends Actor {
     Sprite sprite;
     private final float spriteScale = 2f;
     private int health = 50;
+    private int maxHealth = 50;
     public Damage first;
     public Damage second;
     public String name;
@@ -25,6 +29,7 @@ public class Player extends Actor {
     public int xpToNextLevel = 100;
     public int potions = 5;
     public SwingAnimation SwingAnimation;
+    public boolean hasLeveled = false;
     public Player(){
         atlas = new TextureAtlas("TexturePacks/Player.atlas");
         region = atlas.findRegion("Back");
@@ -39,8 +44,21 @@ public class Player extends Actor {
         name ="";
         SwingAnimation = new SwingAnimation("TexturePacks/SwordAttackFront.atlas",506,340);
     }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public void setHasLeveled(boolean hasLeveled) {
+        this.hasLeveled = hasLeveled;
+    }
+
     public boolean addXp(int xp){
-        this.xp += xp;
+        if(playerClass == 0){
+            this.xp += 0.9*xp;
+        }else{
+            this.xp += xp;
+        }
         if(this.xp >= xpToNextLevel){
             xpToNextLevel *= 1.5;
             return true;
@@ -65,11 +83,43 @@ public class Player extends Actor {
         }
     }
     public void UsePotion(){
-        health += 30;
+        health += 1.3 * maxHealth;
+        if (health >= maxHealth){
+            health = maxHealth;
+        }
         potions -=1;
     }
-    public void DamageHealth(float damage){
-        health -= damage;
+    public void DamageHealth(float damage, Enemy enemy, BattleUI bUI){
+        Random rnd = new Random();
+        int i = rnd.nextInt(100);
+        switch(playerClass){
+            case 0:
+                if(i <= 10){
+                    health -= damage*0.5;
+                }
+                if(i <= 15 && i > 10){
+                    health -= damage*0.3;
+                }
+                break;
+            case 1:
+                health -= damage * 0.8;
+                break;
+            case 2:
+                if(i <= 5){
+                    enemy.health -= damage * 2;
+                    bUI.addBattlelogLine("Critical miss! " + enemy.name + " hit itself with " + damage*2 + " damage!");
+                }else if(i <= 15){
+                    enemy.health -= damage;
+                    bUI.addBattlelogLine(enemy.name + "missed and hit itself with " + damage + " damage!");
+                }else if(i <= 30){
+                    enemy.health -= damage*0.5;
+                    bUI.addBattlelogLine(enemy.name + "scratched itself with " + damage*0.5 + " damage!");
+                }else{
+                    health -= damage;
+                }
+                break;
+        }
+
     }
     public void setPlayerClass(int playerClass){
         this.playerClass = playerClass;
@@ -91,7 +141,15 @@ public class Player extends Actor {
         sprite.setPosition(getX(),getY());
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
     public int getHealth() {
         return  health;
+    }
+
+    public void setHp(int maxHealth) {
+        this.health = maxHealth;
     }
 }
