@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -24,6 +25,9 @@ import game.dungeon.Actions.EnemyAttack;
 import game.dungeon.Actions.SetVisibleAction;
 import game.dungeon.Actions.TurnLabelSequence;
 import game.dungeon.Dclass;
+import game.dungeon.EnemyPosition;
+import game.dungeon.EnemyRandomizer;
+import game.dungeon.MapRandomizer;
 import game.dungeon.UI.BattleUI;
 import game.dungeon.UI.EscWindow;
 import game.dungeon.UI.NextLevel;
@@ -52,7 +56,7 @@ public class RandomScreen implements Screen {
     private byte AttackType = -1;
     private Label turn;
     private boolean battleEnded = false;
-    private List<Enemy> enemyList = new ArrayList();
+    private List<Enemy> enemyList;
     private NextLevel nextLevel;
     private levelUp levelUp;
     public RandomScreen(Dclass game){
@@ -65,7 +69,7 @@ public class RandomScreen implements Screen {
     }
     @Override
     public void show() {
-        map = new TmxMapLoader().load("Maps/Tomb.tmx");
+        map = new TmxMapLoader().load(new MapRandomizer().next());
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.position.set(X,Y,0);
@@ -76,9 +80,8 @@ public class RandomScreen implements Screen {
 
         nextLevel = new NextLevel("",skin,X*4f-200,Y*3f-200,400,200,game);
         levelUp = new levelUp("",skin,X*4f - 250,Y*3f - 250,500,500,game,bUI);
-        final Enemy enemy = new Enemy("Skeleton","TexturePacks/Enemies.atlas","Skeleton", 30,
-                8,(int) (player.xpToNextLevel * 1.3),new float[]{0.9f,2f,0.5f,1f},506,560);
-        enemy.setPosition(510,600);
+        EnemyRandomizer randomizer = new EnemyRandomizer(player);
+        enemyList = randomizer.Randomize();
         bUI.firstAttack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -117,26 +120,31 @@ public class RandomScreen implements Screen {
                 }
             }
         });
-        enemy.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                new AttackListener(PlayersTurn, AttackType, bUI, enemy, player, enemyList);
-                if(!enemyList.isEmpty()) {
-                    new TurnLabelSequence(1, turn);
-                    PlayersTurn = false;
-                }else {battleEnded = true;}
-            }
-        });
+        EnemyPosition position = new EnemyPosition();
+        for (final Enemy enemy: enemyList) {
+            Vector2 coordinates = position.next();
+            enemy.setPosition(coordinates.x,coordinates.y);
+            enemy.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    new AttackListener(PlayersTurn, AttackType, bUI, enemy, player, enemyList);
+                    if(!enemyList.isEmpty()) {
+                        new TurnLabelSequence(1, turn);
+                        PlayersTurn = false;
+                    }else {battleEnded = true;}
+                }
+            });
+            stage.addActor(enemy.SwingAnimation);
+        }
+
 
         stage.addActor(player.SwingAnimation);
-        stage.addActor(enemy.SwingAnimation);
-        enemyList.add(enemy);
+
         turn = new Label("Players Turn",skin);
         turn.setVisible(false);
         turn.addAction(sequence(delay(0.5f), new SetVisibleAction(turn,true),delay(2f), new SetVisibleAction(turn,false)));
         turn.setPosition(510 - turn.getWidth()/2,500);
         stage.addActor(turn);
-        stage.addActor(enemy);
         stage.addActor(bUI);
         stage.addActor(player);
         stage.addActor(nextLevel);
@@ -178,6 +186,7 @@ public class RandomScreen implements Screen {
             nextLevel.SetVisible(true);
             battleEnded = false;
         }
+
         renderer.setView(camera);
         renderer.render();
         stage.act(delta);
@@ -213,7 +222,6 @@ public class RandomScreen implements Screen {
     }
 
     private void EnemyAction(){
-        System.out.println(PlayersTurn);
         for (Enemy enemy : enemyList) {
             enemy.SwingAnimation.start(0.05f);
             enemy.addAction(sequence(delay(0.3f), new EnemyAttack(player, bUI, enemy)));

@@ -1,3 +1,5 @@
+package game.dungeon;
+
 import Entities.Enemies.EasyEnemies;
 import Entities.Enemies.NormalEnemies;
 import Entities.Enemies.StrongEnemies;

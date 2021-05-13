@@ -1,5 +1,7 @@
 package game.dungeon.UI;
 
+import Screens.RandomScreen;
+import Screens.TombScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -7,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import game.dungeon.Dclass;
+
+import java.util.Random;
 
 public class NextLevel extends Window {
     private final Dclass game;
@@ -25,7 +29,16 @@ public class NextLevel extends Window {
         left.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //next level
+                Random rnd = new Random();
+                int i = rnd.nextInt(100);
+                if(i >= 50){
+                    game.player.SetSpriteByRegion("Back");
+                    game.player.ClearActions();
+                    game.setScreen(new RandomScreen(game));
+                }
+                else{
+                    //prizeLevel
+                }
             }
         });
         TextButton right = new TextButton("Right door",skin);
@@ -34,7 +47,9 @@ public class NextLevel extends Window {
         right.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //next level
+                game.player.SetSpriteByRegion("Back");
+                game.player.ClearActions();
+                game.setScreen(new RandomScreen(game));
             }
         });
         Table layout = new Table();
