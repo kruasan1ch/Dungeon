@@ -19,7 +19,7 @@ public class Player extends Actor {
     TextureRegion region;
     Sprite sprite;
     private final float spriteScale = 2f;
-    private int health = 50;
+    private float health = 50;
     private int maxHealth = 50;
     public Damage first;
     public Damage second;
@@ -94,12 +94,7 @@ public class Player extends Actor {
         int i = rnd.nextInt(100);
         switch(playerClass){
             case 0:
-                if(i <= 10){
-                    health -= damage*0.5;
-                }
-                if(i <= 15 && i > 10){
-                    health -= damage*0.3;
-                }
+                health -= damage;
                 break;
             case 1:
                 health -= damage * 0.8;
@@ -145,7 +140,7 @@ public class Player extends Actor {
         return maxHealth;
     }
 
-    public int getHealth() {
+    public float getHealth() {
         return  health;
     }
 

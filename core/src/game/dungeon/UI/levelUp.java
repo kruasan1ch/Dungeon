@@ -22,7 +22,7 @@ public class levelUp extends Window {
         hp.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent changeEvent, Actor actor) {
-                game.player.setMaxHealth((int)(game.player.getMaxHealth() * 1.5));
+                game.player.setMaxHealth((int)(game.player.getMaxHealth() * 1.25));
                 game.player.setHp(game.player.getMaxHealth());
                 game.player.setHasLeveled(false);
                 levelUp.super.setVisible(false);
@@ -37,7 +37,10 @@ public class levelUp extends Window {
         dmgFirst.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.player.setMaxHealth((int)(game.player.getMaxHealth() * 1.15));
                 game.player.first.Ammount *= 1.25;
+                game.player.first.Ammount += 5;
+                game.player.second.Ammount += 2;
                 game.player.setHasLeveled(false);
                 levelUp.super.setVisible(false);
                 bUI.addBattlelogLine("First attack leveled " + game.player.first.Ammount);
@@ -49,12 +52,16 @@ public class levelUp extends Window {
         dmgSecond.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.player.setMaxHealth((int)(game.player.getMaxHealth() * 1.15));
                 game.player.second.Ammount *= 1.25;
+                game.player.first.Ammount += 2;
+                game.player.second.Ammount += 5;
                 game.player.setHasLeveled(false);
                 levelUp.super.setVisible(false);
                 bUI.addBattlelogLine("Second attack leveled " + game.player.second.Ammount);
             }
         });
+
         Table layout = new Table();
         layout.add(new Label("hp: " + game.player.getMaxHealth(),skin)).padLeft(5).left();
         layout.add(hp).padLeft(5).left();

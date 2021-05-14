@@ -34,6 +34,7 @@ import game.dungeon.UI.NextLevel;
 import game.dungeon.UI.levelUp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -69,15 +70,17 @@ public class RandomScreen implements Screen {
     }
     @Override
     public void show() {
-        map = new TmxMapLoader().load(new MapRandomizer().next());
+        //map = new TmxMapLoader().load(new MapRandomizer().next());
+        map = new TmxMapLoader().load("Maps/Tomb.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.position.set(X,Y,0);
         escWindow = new EscWindow("",skin,X*4f - 250,Y*3f - 250,500,500,game);
         camera.zoom = (float) (320 * 256)  / (Dclass.height * Dclass.Width) * (float) 4.5;
         camera.update();
-        player.SetStartPosition(506,300);
-
+        Random random = new Random();
+        player.SetStartPosition(500 + random.nextInt(10),300);
+        System.out.println("p" + player.getX() + " " +player.getY());
         nextLevel = new NextLevel("",skin,X*4f-200,Y*3f-200,400,200,game);
         levelUp = new levelUp("",skin,X*4f - 250,Y*3f - 250,500,500,game,bUI);
         EnemyRandomizer randomizer = new EnemyRandomizer(player);
@@ -120,10 +123,10 @@ public class RandomScreen implements Screen {
                 }
             }
         });
-        EnemyPosition position = new EnemyPosition();
+        System.out.println(Arrays.toString(enemyList.toArray()));
+        int x = 400;
         for (final Enemy enemy: enemyList) {
-            Vector2 coordinates = position.next();
-            enemy.setPosition(coordinates.x,coordinates.y);
+            enemy.setPosition(x,600);
             enemy.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -134,7 +137,10 @@ public class RandomScreen implements Screen {
                     }else {battleEnded = true;}
                 }
             });
+            System.out.println("e "+enemy.getX() +" "+ enemy.getY()+ " " + enemy.name);
+            stage.addActor(enemy);
             stage.addActor(enemy.SwingAnimation);
+            x+= 100;
         }
 
 
@@ -150,6 +156,8 @@ public class RandomScreen implements Screen {
         stage.addActor(nextLevel);
         stage.addActor(levelUp);
         stage.addActor(escWindow);
+
+        //System.out.println(Arrays.toString(stage.getActors().toArray()));
     }
 
     @Override
@@ -160,10 +168,16 @@ public class RandomScreen implements Screen {
             escWindow.setVisible(!game.Pause);
             game.Pause = !game.Pause;
         }
+
         if(!PlayersTurn && !enemyList.isEmpty()){
             EnemyAction();
         }
+        /*
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            System.out.printf(Gdx.input.getX() + " " + Gdx.input.getY() + "\n");
+        }
 
+         */
         if(battleEnded){
             int previos = player.potions;
             Random rnd = new Random();
