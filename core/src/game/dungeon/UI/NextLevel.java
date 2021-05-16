@@ -1,5 +1,7 @@
 package game.dungeon.UI;
 
+import Screens.ChestScreen;
+import Screens.GameOver;
 import Screens.RandomScreen;
 import Screens.TombScreen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -29,16 +31,7 @@ public class NextLevel extends Window {
         left.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                Random rnd = new Random();
-                int i = rnd.nextInt(100);
-                if(i >= 50){
-                    game.player.SetSpriteByRegion("Back");
-                    game.player.ClearActions();
-                    game.setScreen(new RandomScreen(game));
-                }
-                else{
-                    //prizeLevel
-                }
+                changeLevel();
             }
         });
         TextButton right = new TextButton("Right door",skin);
@@ -47,9 +40,7 @@ public class NextLevel extends Window {
         right.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                game.player.SetSpriteByRegion("Back");
-                game.player.ClearActions();
-                game.setScreen(new RandomScreen(game));
+                changeLevel();
             }
         });
         Table layout = new Table();
@@ -60,5 +51,17 @@ public class NextLevel extends Window {
     }
     public void SetVisible(boolean state){
         this.setVisible(state);
+    }
+    private void changeLevel(){
+        Random rnd = new Random();
+        int i = rnd.nextInt(100);
+        if(i <= 30){
+            game.player.ClearActions();
+            game.setScreen(new ChestScreen(game));
+        }
+        else{
+            game.player.ClearActions();
+            game.setScreen(new RandomScreen(game));
+        }
     }
 }

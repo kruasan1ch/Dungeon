@@ -128,7 +128,6 @@ public class TombScreen implements Screen {
         });
 
         stage.addActor(player.SwingAnimation);
-        stage.addActor(enemy.SwingAnimation);
         enemyList.add(enemy);
         turn = new Label("Players Turn",skin);
         turn.setVisible(false);
@@ -156,20 +155,6 @@ public class TombScreen implements Screen {
         }
 
         if(battleEnded){
-            int previos = player.potions;
-            Random rnd = new Random();
-            int i = rnd.nextInt(100);
-            if(i <= 15){
-                player.potions += 3;
-            }
-            if(i <= 30 && i > 15){
-                player.potions += 2;
-            }
-            if(i <= 50 && i > 30){
-                player.potions += 1;
-            }
-            bUI.UpdatePotionLabel();
-            bUI.addBattlelogLine("You found " + (player.potions - previos) + " health potions");
             if(player.hasLeveled){
                 levelUp.setVisible(true);
             }
@@ -214,7 +199,7 @@ public class TombScreen implements Screen {
         System.out.println(PlayersTurn);
         for (Enemy enemy : enemyList) {
             enemy.SwingAnimation.start(0.05f);
-            enemy.addAction(sequence(delay(0.3f), new EnemyAttack(player, bUI, enemy)));
+            enemy.addAction(sequence(delay(0.3f), new EnemyAttack(game, bUI, enemy)));
         }
         PlayersTurn = true;
         new TurnLabelSequence(0,turn);

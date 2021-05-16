@@ -1,15 +1,12 @@
 package Screens;
 
 import Entities.Chest;
-import Entities.Enemy;
 import Entities.Player;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -21,18 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import game.dungeon.Actions.AttackListener;
-import game.dungeon.Actions.EnemyAttack;
-import game.dungeon.Actions.SetVisibleAction;
-import game.dungeon.Actions.TurnLabelSequence;
 import game.dungeon.Dclass;
 import game.dungeon.UI.BattleUI;
 import game.dungeon.UI.EscWindow;
 import game.dungeon.UI.NextLevel;
-import game.dungeon.UI.levelUp;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
@@ -50,12 +40,16 @@ public class ChestScreen implements Screen {
     private OrthographicCamera camera;
     private Window escWindow;
     private NextLevel nextLevel;
+    private Label text;
+    private BattleUI bUI;
+    private Chest chest;
     public ChestScreen(Dclass game){
         this.game = game;
         stage = new Stage();
         Gdx.input.setInputProcessor(stage);
         skin = new Skin(Gdx.files.internal("Skin/uiskin.json"));
         player = game.player;
+        bUI = new BattleUI(game,skin);
     }
     @Override
     public void show() {
@@ -67,13 +61,29 @@ public class ChestScreen implements Screen {
         camera.zoom = (float) (320 * 256)  / (Dclass.height * Dclass.Width) * (float) 4.5;
         camera.update();
         player.SetStartPosition(506,300);
-
+        text = new Label("You found chest!\nClick on it to get some loot!\n", skin, "borderless");
+        text.setPosition(248,98);
+        text.setHeight(84);
+        text.setWidth(524);
+        text.setWrap(true);
         nextLevel = new NextLevel("",skin,X*4f-200,Y*3f-200,400,200,game);
-        Chest chest = new Chest();
-        chest.addListener(new ChangeListener() {
+        chest = new Chest(504,516, "1");
+        chest.addListener(new ClickListener(){
             @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //drop loot
+            public void clicked(InputEvent event, float x, float y) {
+                chest.remove();
+                int previos = player.potions;
+                Random rnd = new Random();
+                int i = rnd.nextInt(100);
+                if(i <= 15){
+                    player.potions += 3;
+                }else if(i <= 30){
+                    player.potions += 2;
+                }else{
+                    player.potions += 1;
+                }
+                text.setText(text.getText() + "You found " + (player.potions - previos) + " hp potions!");
+                bUI.UpdatePotionLabel();
                 nextLevel.SetVisible(true);
             }
         });
@@ -82,6 +92,7 @@ public class ChestScreen implements Screen {
         stage.addActor(player);
         stage.addActor(nextLevel);
         stage.addActor(escWindow);
+        stage.addActor(text);
     }
 
     @Override
@@ -92,7 +103,6 @@ public class ChestScreen implements Screen {
             escWindow.setVisible(!game.Pause);
             game.Pause = !game.Pause;
         }
-
         renderer.setView(camera);
         renderer.render();
         stage.act(delta);

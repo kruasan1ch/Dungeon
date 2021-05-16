@@ -70,8 +70,8 @@ public class RandomScreen implements Screen {
     }
     @Override
     public void show() {
-        //map = new TmxMapLoader().load(new MapRandomizer().next());
-        map = new TmxMapLoader().load("Maps/Tomb.tmx");
+        map = new TmxMapLoader().load(new MapRandomizer().next());
+        //map = new TmxMapLoader().load("Maps/Tomb.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();
         camera.position.set(X,Y,0);
@@ -127,6 +127,7 @@ public class RandomScreen implements Screen {
         int x = 400;
         for (final Enemy enemy: enemyList) {
             enemy.setPosition(x,600);
+            enemy.SwingAnimation.setPosition(x, 550);
             enemy.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -137,9 +138,8 @@ public class RandomScreen implements Screen {
                     }else {battleEnded = true;}
                 }
             });
-            System.out.println("e "+enemy.getX() +" "+ enemy.getY()+ " " + enemy.name);
+            System.out.println("e "+enemy.getX() +" "+ enemy.getY()+ " " + enemy.name + " " + enemy.SwingAnimation.getX());
             stage.addActor(enemy);
-            stage.addActor(enemy.SwingAnimation);
             x+= 100;
         }
 
@@ -179,20 +179,6 @@ public class RandomScreen implements Screen {
 
          */
         if(battleEnded){
-            int previos = player.potions;
-            Random rnd = new Random();
-            int i = rnd.nextInt(100);
-            if(i <= 15){
-                player.potions += 3;
-            }
-            if(i <= 30 && i > 15){
-                player.potions += 2;
-            }
-            if(i <= 50 && i > 30){
-                player.potions += 1;
-            }
-            bUI.UpdatePotionLabel();
-            bUI.addBattlelogLine("You found " + (player.potions - previos) + " health potions");
             if(player.hasLeveled){
                 System.out.println("levelup");
                 levelUp.setVisible(true);
@@ -238,7 +224,7 @@ public class RandomScreen implements Screen {
     private void EnemyAction(){
         for (Enemy enemy : enemyList) {
             enemy.SwingAnimation.start(0.05f);
-            enemy.addAction(sequence(delay(0.3f), new EnemyAttack(player, bUI, enemy)));
+            enemy.addAction(sequence(delay(0.3f), new EnemyAttack(game, bUI, enemy)));
         }
         PlayersTurn = true;
         new TurnLabelSequence(0,turn);

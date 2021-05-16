@@ -55,7 +55,7 @@ public class SwingAnimation extends Actor {
         sprite.draw(batch);
     }
 
-    private class ChangeSprite extends Action{
+    class ChangeSprite extends Action{
         SwingAnimation swingAnimation;
         private final String name;
         public ChangeSprite(String name){

@@ -1,18 +1,32 @@
 package Screens;
 
+import Entities.Player;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import game.dungeon.Damage;
 import game.dungeon.Dclass;
+import game.dungeon.Saver;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainMenu implements Screen {
@@ -49,6 +63,17 @@ public class MainMenu implements Screen {
                 game.setScreen(new CharCreation(game));
             }
         });
+        TextButton Load = new TextButton("Load",skin);
+        Load.setPosition(428,330);
+        Load.setHeight(ButtonHeight);
+        Load.setWidth(ButtonWidth);
+        Load.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                new Saver(game).load();
+            }
+        });
+
         TextButton Exit = new TextButton("Exit", skin);
         Exit.setPosition(428,194);
         Exit.setHeight(ButtonHeight);
@@ -62,13 +87,16 @@ public class MainMenu implements Screen {
         });
         stage.addActor(newGame);
         stage.addActor(Exit);
+        stage.addActor(Load);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+        if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            System.out.printf(Gdx.input.getX() + " " + Gdx.input.getY() + "\n");
+        }
         renderer.setView(camera);
         renderer.render();
         stage.act();

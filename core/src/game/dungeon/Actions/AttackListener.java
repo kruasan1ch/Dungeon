@@ -13,11 +13,11 @@ public class AttackListener{
         if (PlayersTurn) {
             if(AttackType ==0) {
                 bUI.addBattlelogLine( "You hit " + enemy.name + " with " +
-                        enemy.DamageEnemy(player.first.Ammount, player.first.Type, player));
+                        enemy.DamageEnemy((int) player.first.Ammount, player.first.Type, player));
             }
             if(AttackType == 1){
                 bUI.addBattlelogLine( "You hit " + enemy.name + " with " +
-                        enemy.DamageEnemy(player.second.Ammount, player.second.Type, player));
+                        enemy.DamageEnemy((int) player.second.Ammount, player.second.Type, player));
             }
             AttackType = -1;
             Pixmap pm = new Pixmap(Gdx.files.internal("Cursor/Cursor.png"));

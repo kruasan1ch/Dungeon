@@ -56,7 +56,6 @@ public class GraveyardCutscene implements Screen {
         text.setHeight(84);
         text.setWidth(524);
         text.setWrap(true);
-        text.setWrap(true);
         scroll.setPosition(248,66);
         goDown = new TextButton("Go down",skin);
         goDown.addListener(new ChangeListener() {

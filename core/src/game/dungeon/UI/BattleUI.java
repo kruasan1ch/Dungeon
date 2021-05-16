@@ -13,7 +13,7 @@ public class BattleUI extends Table {
     public BattleUI(Dclass game, Skin skin){
         this.skin = skin;
         this.game=game;
-        hp = new Label("HP: " + game.player.getHealth() + "/" + game.player.getMaxHealth(), skin, "borderless");
+        hp = new Label("HP: " + ( (int) game.player.getHealth())+ "/" +  game.player.getMaxHealth(), skin, "borderless");
         potions = new Label("Potions: " + game.player.potions,skin, "borderless");
         charIconLabel = new Label("" + game.player.name,skin, "borderless");
         charIcon = new Icon();
@@ -61,7 +61,7 @@ public class BattleUI extends Table {
 
     }
     public void UpdateHpLabel(){
-        this.hp.setText("HP: " + game.player.getHealth() + "/" + game.player.getMaxHealth());
+        this.hp.setText("HP: " + (int) game.player.getHealth() + "/" + game.player.getMaxHealth());
     }
     public void UpdatePotionLabel(){
         this.potions.setText("Potions: " + game.player.potions);

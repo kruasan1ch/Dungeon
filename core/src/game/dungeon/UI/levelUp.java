@@ -41,6 +41,8 @@ public class levelUp extends Window {
                 game.player.first.Ammount *= 1.25;
                 game.player.first.Ammount += 5;
                 game.player.second.Ammount += 2;
+                game.player.first.Ammount = (float) Math.ceil(game.player.first.Ammount);
+                game.player.second.Ammount = (float) Math.ceil(game.player.second.Ammount);
                 game.player.setHasLeveled(false);
                 levelUp.super.setVisible(false);
                 bUI.addBattlelogLine("First attack leveled " + game.player.first.Ammount);
@@ -56,6 +58,8 @@ public class levelUp extends Window {
                 game.player.second.Ammount *= 1.25;
                 game.player.first.Ammount += 2;
                 game.player.second.Ammount += 5;
+                game.player.first.Ammount = (float) Math.ceil(game.player.first.Ammount);
+                game.player.second.Ammount = (float) Math.ceil(game.player.second.Ammount);
                 game.player.setHasLeveled(false);
                 levelUp.super.setVisible(false);
                 bUI.addBattlelogLine("Second attack leveled " + game.player.second.Ammount);
