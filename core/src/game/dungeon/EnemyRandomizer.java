@@ -91,10 +91,10 @@ public class EnemyRandomizer {
         return easyEnemies[new Random().nextInt(easyEnemies.length)];
     }
     public  Enemy getRandomNormal(){
-        return normalEnemies[new Random().nextInt(normalEnemies.length + 1)];
+        return normalEnemies[new Random().nextInt(normalEnemies.length)];
     }
     public  Enemy getRandomStrong(){
-        return strongEnemies[new Random().nextInt(strongEnemies.length + 1)];
+        return strongEnemies[new Random().nextInt(strongEnemies.length)];
     }
     public void setEnemy(Enemy enemy){
         System.out.println(enemy.name);
