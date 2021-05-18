@@ -25,7 +25,7 @@ public class AttackListener{
             pm.dispose();
 
             player.SwingAnimation.start(0.05f);
-
+            player.attackSound.play();
             if(enemy.health <= 0){
                 bUI.addBattlelogLine("You killed " + enemy.name);
                 player.killCount +=1;

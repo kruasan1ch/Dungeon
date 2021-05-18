@@ -1,6 +1,8 @@
 package Entities;
 import Screens.GameOver;
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -33,6 +35,8 @@ public class Player extends Actor {
     public int potions = 5;
     public SwingAnimation SwingAnimation;
     public boolean hasLeveled = false;
+    public Sound attackSound;
+    private Sound deathSound;
     public Player(){
         atlas = new TextureAtlas("TexturePacks/Player.atlas");
         region = atlas.findRegion("Back");
@@ -46,6 +50,8 @@ public class Player extends Actor {
         second.Ammount = 10;
         name ="";
         SwingAnimation = new SwingAnimation("TexturePacks/SwordAttackFront.atlas",506,340);
+        attackSound = Gdx.audio.newSound(Gdx.files.internal("Sound/FX/Fight.mp3"));
+        deathSound = Gdx.audio.newSound(Gdx.files.internal("Sound/FX/Game Over.mp3"));
     }
     public Player(int playerClass,float health,int maxHealth,Damage first, Damage second,String name,int killCount,int xp,int xpToNextLevel,int potions){
         this.playerClass = playerClass;
@@ -138,6 +144,8 @@ public class Player extends Actor {
                 break;
         }
         if(health <= 0){
+            deathSound.play(game.fxVolume);
+            game.ResetMusicFile("Sound/Music/death.mp3");
             game.setScreen(new GameOver(game));
         }
 

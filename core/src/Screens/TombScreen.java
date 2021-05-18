@@ -65,6 +65,7 @@ public class TombScreen implements Screen {
     }
     @Override
     public void show() {
+        game.ResetMusicFile("Sound/Music/rndLevel.mp3");
         map = new TmxMapLoader().load("Maps/Tomb.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();

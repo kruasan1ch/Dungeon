@@ -59,11 +59,11 @@ public class EnemyRandomizer {
     }
     public ArrayList<Enemy> Randomize(){
         int[] N = {0,0,0};
-        if(player.getMaxHealth() >= 50 && player.getMaxHealth() <= 150){
+        if(player.getMaxHealth() >= 50 && player.getMaxHealth() <= 80){
             N = new int[]{2, 0, 0};
-        }else if(player.getMaxHealth() >= 150 && player.getMaxHealth() <= 250){
+        }else if(player.getMaxHealth() >= 80 && player.getMaxHealth() <= 150){
             N = new int[]{1, 1, 0};
-        }else if(player.getMaxHealth() >= 250 && player.getMaxHealth() <= 350){
+        }else if(player.getMaxHealth() >= 150){
             N = new int[]{1, 1, 1};
         }
         System.out.println(Arrays.toString(N));

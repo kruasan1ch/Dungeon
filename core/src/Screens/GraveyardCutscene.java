@@ -39,6 +39,7 @@ public class GraveyardCutscene implements Screen {
     }
     @Override
     public void show() {
+        game.ResetMusicFile("Sound/Music/cutscene.mp3");
         map = new TmxMapLoader().load("Maps/Graveyard.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
         camera = new OrthographicCamera();

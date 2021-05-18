@@ -60,7 +60,7 @@ public class EscWindow extends Window {
         });
         TextButton Exit = new TextButton("Exit",skin);
         Exit.setWidth(backToMain.getWidth());
-        Exit.setPosition(Exit.getWidth()/2 - 15,Height *0.75f);
+        Exit.setPosition(Exit.getWidth()/2 - 15,Height *0.7f);
         Exit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -68,7 +68,6 @@ public class EscWindow extends Window {
                 System.exit(0);
             }
         });
-
         this.addActor(backToMain);
         this.addActor(Continue);
         this.addActor(Save);

@@ -11,9 +11,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import game.dungeon.Dclass;
 import game.dungeon.UI.EscWindow;
 import game.dungeon.UI.NextLevel;
@@ -54,7 +56,7 @@ public class GameOver implements Screen {
         lastWords.setWidth(250);
         lastWords.setWrap(true);
 
-        TextField epitaph = new TextField("",skin, "borderless");
+        final TextField epitaph = new TextField("",skin, "borderless");
         epitaph.setPosition(425,375);
         epitaph.setSize(160,50);
 
@@ -62,14 +64,22 @@ public class GameOver implements Screen {
         ng.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                game.ResetMusicFile("Sound/Music/main menu.mp3");
                 game.player = new Player();
                 game.setScreen(new CharCreation(game));
             }
         });
         TextButton dl = new TextButton("Death chart", skin);
+        dl.addListener( new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new DeathChart(game,epitaph.getText()));
+            }
+        });
 
         Table layout = new Table();
         layout.add(ng);
+        layout.row();
         layout.add(dl);
         layout.setPosition(515,350);
         stage.addActor(gameOver);
